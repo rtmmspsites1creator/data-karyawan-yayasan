@@ -1,5 +1,6 @@
 export const state = {
   currentUser: null,
   employees: [],
-  activeSort: "masaKerjaOld"
+  sortKey: "masaKerja",
+  sortDir: "asc"
 };

@@ -22,15 +22,27 @@ function updateStats(data) {
 
 function sortList(list) {
   const tgl = (x) => new Date(x.tanggalMasuk).getTime() || 0;
-  const byNama = (a, b) =>
-    String(a.nama).localeCompare(String(b.nama), "id", { sensitivity: "base" });
+  const byText = (field) => (a, b) =>
+    String(a[field] ?? "").localeCompare(String(b[field] ?? ""), "id", {
+      sensitivity: "base",
+      numeric: true
+    });
   const sorters = {
-    namaAsc: byNama,
-    namaDesc: (a, b) => byNama(b, a),
-    masaKerjaOld: (a, b) => tgl(a) - tgl(b),
-    masaKerjaNew: (a, b) => tgl(b) - tgl(a)
+    nama: byText("nama"),
+    nik: byText("nik"),
+    yayasan: byText("yayasan"),
+    masaKerja: (a, b) => tgl(a) - tgl(b)
   };
-  return [...list].sort(sorters[state.activeSort] || sorters.masaKerjaOld);
+  const compare = sorters[state.sortKey] || sorters.masaKerja;
+  const dir = state.sortDir === "desc" ? -1 : 1;
+  return [...list].sort((a, b) => compare(a, b) * dir);
+}
+
+function updateSortIndicators() {
+  const label = state.sortDir === "desc" ? "descending" : "ascending";
+  document.querySelectorAll("th[data-sort]").forEach((th) => {
+    th.setAttribute("aria-sort", th.dataset.sort === state.sortKey ? label : "none");
+  });
 }
 
 function filterList(list) {
@@ -45,6 +57,7 @@ export function renderView() {
   const tbody = el("tableBody");
   const rows = sortList(filterList(state.employees));
   updateStats(state.employees);
+  updateSortIndicators();
 
   if (!rows.length) {
     tbody.innerHTML = messageRow(
@@ -80,7 +93,12 @@ export async function loadAdminData() {
   }
 }
 
-export function sortData(criteria) {
-  state.activeSort = criteria;
+export function sortData(key) {
+  if (state.sortKey === key) {
+    state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+  } else {
+    state.sortKey = key;
+    state.sortDir = "asc";
+  }
   renderView();
 }
