@@ -44,8 +44,12 @@
               <input class="input" type="text" id="yayasan" maxlength="100" required>
             </div>
             <div class="field">
-              <label for="tglMasuk">Tanggal mulai bekerja</label>
-              <input class="input" type="date" id="tglMasuk" required>
+              <label id="lblTgl" for="tglHari">Tanggal mulai bekerja</label>
+              <div class="date-group" role="group" aria-labelledby="lblTgl">
+                <select class="input" id="tglHari" autocomplete="off" required aria-label="Tanggal"></select>
+                <select class="input" id="tglBulan" autocomplete="off" required aria-label="Bulan"></select>
+                <select class="input" id="tglTahun" autocomplete="off" required aria-label="Tahun"></select>
+              </div>
               <div class="hint">Masa kerja dihitung otomatis dari tanggal ini.</div>
             </div>
             <button type="submit" id="btnSubmit" class="btn block">Kirim data</button>
@@ -77,12 +81,6 @@
         <h1>Rekap Data Karyawan</h1>
         <div class="toolbar-actions">
           <input class="input" type="search" id="searchInput" placeholder="Cari nama, NIK, yayasan" oninput="renderView()" aria-label="Cari data">
-          <select class="input" id="sortSelect" onchange="sortData(this.value)" aria-label="Urutkan data">
-            <option value="masaKerjaOld">Masa kerja terlama</option>
-            <option value="masaKerjaNew">Masa kerja terbaru</option>
-            <option value="namaAsc">Nama A–Z</option>
-            <option value="namaDesc">Nama Z–A</option>
-          </select>
           <button type="button" class="btn ghost" onclick="handleLogout()">Keluar</button>
         </div>
       </div>
@@ -98,11 +96,11 @@
           <thead>
             <tr>
               <th class="col-no">No</th>
-              <th>Nama</th>
-              <th>NIK</th>
-              <th>Yayasan</th>
-              <th>Tanggal Masuk</th>
-              <th>Masa Kerja</th>
+              <th data-sort="nama" aria-sort="none"><button type="button" class="sort-btn" onclick="sortData('nama')">Nama</button></th>
+              <th data-sort="nik" aria-sort="none"><button type="button" class="sort-btn" onclick="sortData('nik')">NIK</button></th>
+              <th data-sort="yayasan" aria-sort="none"><button type="button" class="sort-btn" onclick="sortData('yayasan')">Yayasan</button></th>
+              <th data-sort="masaKerja" aria-sort="none"><button type="button" class="sort-btn" onclick="sortData('masaKerja')">Tanggal Masuk</button></th>
+              <th data-sort="masaKerja" aria-sort="none"><button type="button" class="sort-btn" onclick="sortData('masaKerja')">Masa Kerja</button></th>
             </tr>
           </thead>
           <tbody id="tableBody"></tbody>
